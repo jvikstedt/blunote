@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  api:
+    build:
+      context: .
+    volumes:
+      - .:/go/src/github.com/jvikstedt/blunote/
+    command: gin -p 8000 run *.go
+    environment:
+      - DATABASE_URL=postgres://blunote:blunote@db/blunote?sslmode=disable
+    ports:
+      - 8000:8000
+    depends_on:
+     - db
+  db:
+    environment:
+      POSTGRES_DB: blunote
+      POSTGRES_PASSWORD: blunote
+      POSTGRES_USER: blunote
+    image: postgres:9.4
+    ports:
+      - 5432:5432
+    volumes:
+      - blunotedb:/var/lib/postgresql/data
+
+  frontend:
+    build: frontend
+    volumes:
+      - ./frontend/src:/usr/src/app/src
+    ports:
+      - 8080:8080
+
+volumes:
+  blunotedb:
