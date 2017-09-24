@@ -11,6 +11,8 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
+    "axios": "^0.16.2",
+    "semantic-ui-css": "^2.2.12",
     "vue": "^2.4.2",
     "vue-router": "^2.7.0"
   },

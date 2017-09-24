@@ -5,6 +5,7 @@ type NoteStore interface {
 	Clear()
 	Seed()
 	AllNotes() ([]*Note, error)
+	GetOneNote(string) (*Note, error)
 }
 
 type Datastore interface {

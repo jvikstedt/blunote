@@ -15,3 +15,10 @@ func (db *DB) AllNotes() ([]*Note, error) {
 	err := db.Select(&notes, "SELECT * FROM notes")
 	return notes, err
 }
+
+func (db *DB) GetOneNote(id string) (*Note, error) {
+	note := &Note{}
+
+	err := db.Get(note, "SELECT * FROM notes WHERE id=$1", id)
+	return note, err
+}
