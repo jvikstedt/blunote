@@ -45,7 +45,9 @@ func (db *DB) Seed() {
 	db.Clear()
 
 	tx := db.MustBegin()
-	tx.MustExec("INSERT INTO notes (title, body, createdAt, updatedAt) VALUES ($1, $2, $3, $4)", "Go", "Something interesting...", time.Now(), time.Now())
+	tx.MustExec("INSERT INTO notes (title, body, createdAt, updatedAt) VALUES ($1, $2, $3, $4)", "Go", "Lorem ipsum dolor sit amet, consectetur adipiscing elit.", time.Now(), time.Now())
+	tx.MustExec("INSERT INTO notes (title, body, createdAt, updatedAt) VALUES ($1, $2, $3, $4)", "Ruby", "Aliquam ex mauris, posuere in mattis et, dignissim aliquet elit.", time.Now(), time.Now())
+	tx.MustExec("INSERT INTO notes (title, body, createdAt, updatedAt) VALUES ($1, $2, $3, $4)", "JavaScript", "Donec a augue congue, pellentesque odio in, fermentum augue.", time.Now(), time.Now())
 	tx.Commit()
 }
 

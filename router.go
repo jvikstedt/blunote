@@ -34,7 +34,9 @@ func Handler(env *Env, logger *log.Logger) http.Handler {
 }
 
 func (env *Env) notesIndex(w http.ResponseWriter, r *http.Request) {
-	notes, err := env.db.AllNotes()
+	search := r.URL.Query().Get("search")
+
+	notes, err := env.db.SearchNotes(search)
 	if env.checkErr(err, w, http.StatusInternalServerError) {
 		return
 	}

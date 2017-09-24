@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <div class="wrapper">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -11,4 +13,12 @@ export default {
 </script>
 
 <style>
+  body {
+    padding: 1em;
+  }
+
+  .wrapper {
+    max-width: 960px;
+    margin: 20px auto;
+  }
 </style>

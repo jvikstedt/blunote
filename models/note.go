@@ -16,6 +16,13 @@ func (db *DB) AllNotes() ([]*Note, error) {
 	return notes, err
 }
 
+func (db *DB) SearchNotes(input string) ([]*Note, error) {
+	input = "%" + input + "%"
+	notes := []*Note{}
+	err := db.Select(&notes, "SELECT * FROM notes WHERE title ILIKE $1 OR body ILIKE $1", input)
+	return notes, err
+}
+
 func (db *DB) GetOneNote(id string) (*Note, error) {
 	note := &Note{}
 
