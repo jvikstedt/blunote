@@ -30,6 +30,8 @@ func main() {
 		logger.Println(err)
 		os.Exit(1)
 	}
+	defer db.Close()
+
 	db.Clear()
 	db.EnsureTables()
 	db.Seed()
