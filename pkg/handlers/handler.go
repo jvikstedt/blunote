@@ -1,4 +1,4 @@
-package main
+package handlers
 
 import (
 	"encoding/json"
@@ -9,9 +9,10 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
+	"github.com/jvikstedt/blunote/pkg/models"
 )
 
-func Handler(env *Env, logger *log.Logger) http.Handler {
+func New(logger *log.Logger, m *models.Model) http.Handler {
 	r := chi.NewRouter()
 
 	r.Use(middleware.RequestID)
@@ -21,43 +22,50 @@ func Handler(env *Env, logger *log.Logger) http.Handler {
 	r.Use(render.SetContentType(render.ContentTypeJSON))
 	r.Use(cors.Default().Handler)
 
+	h := handler{logger, m}
+
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Route("/notes", func(r chi.Router) {
-			r.Get("/", env.notesIndex)
+			r.Get("/", h.notesIndex)
 
 			r.Route("/{noteID}", func(r chi.Router) {
-				r.Get("/", env.notesGetOne)
+				r.Get("/", h.notesGetOne)
 			})
 		})
 	})
 	return r
 }
 
-func (env *Env) notesIndex(w http.ResponseWriter, r *http.Request) {
+type handler struct {
+	log   *log.Logger
+	model *models.Model
+}
+
+func (h handler) notesIndex(w http.ResponseWriter, r *http.Request) {
 	search := r.URL.Query().Get("search")
 
-	notes, err := env.db.SearchNotes(search)
-	if env.checkErr(err, w, http.StatusInternalServerError) {
+	notes, err := h.model.SearchNotes(search)
+	if h.checkErr(err, w, http.StatusInternalServerError) {
 		return
 	}
 
 	json.NewEncoder(w).Encode(notes)
 }
 
-func (env *Env) notesGetOne(w http.ResponseWriter, r *http.Request) {
+func (h handler) notesGetOne(w http.ResponseWriter, r *http.Request) {
 	noteID := chi.URLParam(r, "noteID")
 
-	note, err := env.db.GetOneNote(noteID)
-	if env.checkErr(err, w, http.StatusNotFound) {
+	note, err := h.model.GetOneNote(noteID)
+	if h.checkErr(err, w, http.StatusNotFound) {
 		return
 	}
 
 	json.NewEncoder(w).Encode(note)
 }
 
-func (env *Env) checkErr(err error, w http.ResponseWriter, statusCode int) bool {
+func (h handler) checkErr(err error, w http.ResponseWriter, statusCode int) bool {
 	if err != nil {
-		env.log.Println(err)
+		h.log.Println(err)
 		w.WriteHeader(statusCode)
 		return true
 	}

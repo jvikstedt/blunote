@@ -5,13 +5,10 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/jvikstedt/blunote/models"
+	"github.com/jvikstedt/blunote/pkg/db"
+	"github.com/jvikstedt/blunote/pkg/handlers"
+	"github.com/jvikstedt/blunote/pkg/models"
 )
-
-type Env struct {
-	db  models.Datastore
-	log *log.Logger
-}
 
 func main() {
 	port := os.Getenv("PORT")
@@ -26,7 +23,7 @@ func main() {
 
 	logger := log.New(os.Stdout, "", log.LstdFlags)
 
-	db, err := models.NewDB(databaseURL)
+	db, err := db.NewPgDb(databaseURL)
 	if err != nil {
 		logger.Println(err)
 		os.Exit(1)
@@ -35,8 +32,8 @@ func main() {
 	db.EnsureTables()
 	db.Seed()
 
-	env := &Env{db: db, log: logger}
+	model := models.New(db)
 
-	handler := Handler(env, logger)
+	handler := handlers.New(logger, model)
 	http.ListenAndServe(":"+port, handler)
 }
