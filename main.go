@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 
 	"github.com/jvikstedt/blunote/pkg/db"
 	"github.com/jvikstedt/blunote/pkg/handlers"
@@ -33,7 +35,26 @@ func main() {
 	db.Seed()
 
 	model := models.New(db)
+	http.Handle("/", handlers.New(logger, model))
 
-	handler := handlers.New(logger, model)
-	http.ListenAndServe(":"+port, handler)
+	server := &http.Server{Addr: ":" + port}
+
+	go func() {
+		sigquit := make(chan os.Signal, 1)
+		signal.Notify(sigquit, os.Interrupt, os.Kill)
+
+		<-sigquit
+
+		if err := server.Shutdown(context.Background()); err != nil {
+			logger.Printf("Unable to shut down server: %v", err)
+		} else {
+			logger.Println("Server stopped")
+		}
+	}()
+
+	if err := server.ListenAndServe(); err != http.ErrServerClosed {
+		logger.Printf("%v", err)
+	} else {
+		logger.Println("Server closed!")
+	}
 }
