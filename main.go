@@ -31,6 +31,7 @@ func main() {
 		logger.Println(err)
 		os.Exit(1)
 	}
+	db.Clear()
 	db.EnsureTables()
 	db.Seed()
 

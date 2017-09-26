@@ -1,22 +1,16 @@
 package models
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
-var tables = []string{
-	"notes",
-}
-
 var schema = `
 CREATE TABLE IF NOT EXISTS notes (
 	id serial NOT NULL,
 	title character varying(100) NOT NULL,
-	body text,
 	createdAt timestamptz,
 	updatedAt timestamptz default current_timestamp,
 	CONSTRAINT notes_pkey PRIMARY KEY (id)
@@ -42,23 +36,18 @@ func (db *DB) EnsureTables() {
 }
 
 func (db *DB) Seed() {
-	db.Clear()
-
 	tx := db.MustBegin()
-	tx.MustExec("INSERT INTO notes (title, body, createdAt, updatedAt) VALUES ($1, $2, $3, $4)", "Go", "Lorem ipsum dolor sit amet, consectetur adipiscing elit.", time.Now(), time.Now())
-	tx.MustExec("INSERT INTO notes (title, body, createdAt, updatedAt) VALUES ($1, $2, $3, $4)", "Ruby", "Aliquam ex mauris, posuere in mattis et, dignissim aliquet elit.", time.Now(), time.Now())
-	tx.MustExec("INSERT INTO notes (title, body, createdAt, updatedAt) VALUES ($1, $2, $3, $4)", "JavaScript", "Donec a augue congue, pellentesque odio in, fermentum augue.", time.Now(), time.Now())
+	tx.MustExec("INSERT INTO notes (title, createdAt, updatedAt) VALUES ($1, $2, $3)", "Go", time.Now(), time.Now())
+	tx.MustExec("INSERT INTO notes (title, createdAt, updatedAt) VALUES ($1, $2, $3)", "Ruby", time.Now(), time.Now())
+	tx.MustExec("INSERT INTO notes (title, createdAt, updatedAt) VALUES ($1, $2, $3)", "JavaScript", time.Now(), time.Now())
 	tx.Commit()
 }
 
 func (db *DB) Clear() {
 	tx := db.MustBegin()
-	for _, v := range tables {
-		tx.MustExec(fmt.Sprintf("DROP TABLE IF EXISTS %s", v))
-	}
+	tx.MustExec("DROP SCHEMA public CASCADE")
+	tx.MustExec("CREATE SCHEMA public")
 	tx.Commit()
-
-	db.EnsureTables()
 }
 
 func (db *DB) NoteStore() NoteStore {

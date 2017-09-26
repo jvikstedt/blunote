@@ -5,7 +5,6 @@ import "time"
 type Note struct {
 	ID        int       `json:"id"`
 	Title     string    `json:"title"`
-	Body      string    `json:"body"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -19,7 +18,7 @@ func (db *DB) AllNotes() ([]*Note, error) {
 func (db *DB) SearchNotes(input string) ([]*Note, error) {
 	input = "%" + input + "%"
 	notes := []*Note{}
-	err := db.Select(&notes, "SELECT * FROM notes WHERE title ILIKE $1 OR body ILIKE $1", input)
+	err := db.Select(&notes, "SELECT * FROM notes WHERE title ILIKE $1", input)
 	return notes, err
 }
 
