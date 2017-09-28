@@ -1,14 +1,15 @@
 <template>
   <div>
-    {{ note.title }}
-    {{ note.body }}
+    <h1>
+      {{ note.title }}
+    </h1>
     <div>
       <quill-editor v-model="content"
         :options="editorOption"
         ref="editor">
       </quill-editor>
     </div>
-    <button @click="onUpdateNote">Update</button>
+    <button class="ui button" @click="onUpdateNote">Update</button>
   </div>
 </template>
 

@@ -1,6 +1,15 @@
 <template>
   <div id="app">
-    <div class="wrapper">
+    <div class="ui fixed inverted menu">
+      <div class="ui container">
+        <router-link to="/" class="header item">
+          dsNotes
+        </router-link>
+        <router-link to="/" class="item">Home</router-link>
+      </div>
+    </div>
+
+    <div class="ui main text container">
       <router-view></router-view>
     </div>
   </div>
@@ -14,11 +23,12 @@ export default {
 
 <style>
   body {
-    padding: 1em;
+    background-color: #FFFFFF;
   }
-
-  .wrapper {
-    max-width: 960px;
-    margin: 20px auto;
+  .ui.menu .item img.logo {
+    margin-right: 1.5em;
+  }
+  .main.container {
+    margin-top: 5em;
   }
 </style>
