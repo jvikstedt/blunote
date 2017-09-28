@@ -8,6 +8,12 @@ class Api {
 
     return response.data
   }
+
+  async put (uri, body) {
+    const response = await axios.put(`${this.config.baseURL}${uri}`, body)
+
+    return response.data
+  }
 }
 
 export default Api

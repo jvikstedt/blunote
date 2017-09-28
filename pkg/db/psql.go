@@ -12,8 +12,10 @@ var schema = `
 CREATE TABLE IF NOT EXISTS notes (
 	id serial NOT NULL,
 	title character varying(100) NOT NULL,
-	createdAt timestamptz,
-	updatedAt timestamptz default current_timestamp,
+	body_html text DEFAULT '',
+	body_text_only text DEFAULT '',
+	created_at timestamptz,
+	updated_at timestamptz default current_timestamp,
 	CONSTRAINT notes_pkey PRIMARY KEY (id)
 );`
 
@@ -38,9 +40,9 @@ func (db *pgDb) EnsureTables() {
 
 func (db *pgDb) Seed() {
 	tx := db.MustBegin()
-	tx.MustExec("INSERT INTO notes (title, createdAt, updatedAt) VALUES ($1, $2, $3)", "Go", time.Now(), time.Now())
-	tx.MustExec("INSERT INTO notes (title, createdAt, updatedAt) VALUES ($1, $2, $3)", "Ruby", time.Now(), time.Now())
-	tx.MustExec("INSERT INTO notes (title, createdAt, updatedAt) VALUES ($1, $2, $3)", "JavaScript", time.Now(), time.Now())
+	tx.MustExec("INSERT INTO notes (title, created_at, updated_at) VALUES ($1, $2, $3)", "Go", time.Now(), time.Now())
+	tx.MustExec("INSERT INTO notes (title, created_at, updated_at) VALUES ($1, $2, $3)", "Ruby", time.Now(), time.Now())
+	tx.MustExec("INSERT INTO notes (title, body_html, body_text_only, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)", "JavaScript", "<p>Hello World</p>", "Hello World", time.Now(), time.Now())
 	tx.Commit()
 }
 
@@ -57,10 +59,20 @@ func (db *pgDb) GetNotes() ([]*models.Note, error) {
 	return notes, err
 }
 
+func (db *pgDb) UpdateNote(note *models.Note) error {
+	rows, err := db.NamedQuery(`UPDATE notes SET (title, body_html, body_text_only, updated_at) = (:title, :body_html, :body_text_only, CURRENT_TIMESTAMP) WHERE id=:id RETURNING *`, note)
+	if err != nil {
+		return err
+	}
+	if rows.Next() {
+		err = rows.StructScan(note)
+	}
+	return nil
+}
+
 func (db *pgDb) SearchNotes(input string) ([]*models.Note, error) {
-	input = "%" + input + "%"
 	notes := []*models.Note{}
-	err := db.Select(&notes, "SELECT * FROM notes WHERE title ILIKE $1", input)
+	err := db.Select(&notes, "SELECT * FROM notes WHERE title ~* $1 OR body_text_only ~* $1", input)
 	return notes, err
 }
 

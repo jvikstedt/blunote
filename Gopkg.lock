@@ -26,14 +26,26 @@
   revision = "d9bd385d68c068f1fabb5057e3dedcbcbb039d0f"
 
 [[projects]]
+  name = "github.com/kennygrant/sanitize"
+  packages = ["."]
+  revision = "6a0bfdde8629a3a3a7418a7eae45c54154692514"
+  version = "v1.2"
+
+[[projects]]
   branch = "master"
   name = "github.com/lib/pq"
   packages = [".","oid"]
   revision = "e42267488fe361b9dc034be7a6bffef5b195bceb"
 
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = ["html","html/atom"]
+  revision = "0a9397675ba34b2845f758fe3cd68828369c6517"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0947c7d5919c838868cc742fca3ebc44f31ccfa169e509f28cd31950e89e1523"
+  inputs-digest = "688c5439e45b96c235246b9b3d0cd78d98d7a651b196d2406e5d724b564003b0"
   solver-name = "gps-cdcl"
   solver-version = 1

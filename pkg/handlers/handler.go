@@ -19,7 +19,12 @@ func New(logger *log.Logger, m *models.Model) http.Handler {
 	r.Use(middleware.RequestLogger(&middleware.DefaultLogFormatter{Logger: logger}))
 	r.Use(middleware.Recoverer)
 	r.Use(render.SetContentType(render.ContentTypeJSON))
-	r.Use(cors.Default().Handler)
+	cors := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{"*"},
+	})
+	r.Use(cors.Handler)
 
 	h := handler{logger, m}
 
@@ -29,6 +34,7 @@ func New(logger *log.Logger, m *models.Model) http.Handler {
 
 			r.Route("/{noteID}", func(r chi.Router) {
 				r.Get("/", h.notesGetOne)
+				r.Put("/", h.notesUpdate)
 			})
 		})
 	})
