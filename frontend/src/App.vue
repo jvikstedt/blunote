@@ -10,14 +10,21 @@
     </div>
 
     <div class="ui main text container">
+      <Flash />
       <router-view></router-view>
     </div>
   </div>
 </template>
 
 <script>
+import Flash from '@/components/Flash'
+
 export default {
-  name: 'app'
+  name: 'app',
+
+  components: {
+    Flash
+  }
 }
 </script>
 
@@ -29,6 +36,6 @@ export default {
     margin-right: 1.5em;
   }
   .main.container {
-    margin-top: 5em;
+    margin-top: 4em;
   }
 </style>

@@ -16,6 +16,7 @@
 <script type="text/javascript">
 import { quillEditor } from 'vue-quill-editor'
 import quill from '../quill'
+import { EventBus } from '@/EventBus'
 
 export default {
   data: () => ({
@@ -30,7 +31,7 @@ export default {
       this.note = await this.api.get(`/notes/${noteId}`)
       this.content = this.note.body_html
     } catch (e) {
-      console.log(e)
+      EventBus.$emit('flash', { status: 'error', header: 'Something went wrong!', body: e.toString() })
     }
   },
 
@@ -41,8 +42,9 @@ export default {
           ...this.note,
           body_html: this.content
         })
+        EventBus.$emit('flash', { status: 'success', header: 'Updated successfully!' })
       } catch (e) {
-        console.log(e)
+        EventBus.$emit('flash', { status: 'error', header: 'Something went wrong!', body: e.toString() })
       }
     }
   },

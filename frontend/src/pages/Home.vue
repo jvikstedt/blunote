@@ -10,6 +10,7 @@
 </template>
 
 <script type="text/javascript">
+import { EventBus } from '@/EventBus'
 import _ from 'lodash'
 
 import NoteList from '../components/NoteList'
@@ -30,7 +31,7 @@ export default {
       try {
         this.notes = await this.api.get(`/notes?search=${input}`)
       } catch (e) {
-        console.log(e)
+        EventBus.$emit('flash', { status: 'error', header: 'Something went wrong!', body: e.toString() })
       }
     }, 300),
     onNoteClick: function (note) {
@@ -42,7 +43,7 @@ export default {
     try {
       this.notes = await this.api.get('/notes')
     } catch (e) {
-      console.log(e)
+      EventBus.$emit('flash', { status: 'error', header: 'Something went wrong!', body: e.toString() })
     }
   }
 }
