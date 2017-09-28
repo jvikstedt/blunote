@@ -15,18 +15,7 @@ CREATE TABLE IF NOT EXISTS notes (
 	createdAt timestamptz,
 	updatedAt timestamptz default current_timestamp,
 	CONSTRAINT notes_pkey PRIMARY KEY (id)
-);
-
-CREATE TABLE IF NOT EXISTS body_parts (
-	id serial NOT NULL,
-	meta text,
-	raw text,
-	noteId integer REFERENCES notes(id),
-	createdAt timestamptz,
-	updatedAt timestamptz default current_timestamp,
-	CONSTRAINT body_parts_pkey PRIMARY KEY (id)
-);
-`
+);`
 
 type pgDb struct {
 	*sqlx.DB
@@ -52,9 +41,6 @@ func (db *pgDb) Seed() {
 	tx.MustExec("INSERT INTO notes (title, createdAt, updatedAt) VALUES ($1, $2, $3)", "Go", time.Now(), time.Now())
 	tx.MustExec("INSERT INTO notes (title, createdAt, updatedAt) VALUES ($1, $2, $3)", "Ruby", time.Now(), time.Now())
 	tx.MustExec("INSERT INTO notes (title, createdAt, updatedAt) VALUES ($1, $2, $3)", "JavaScript", time.Now(), time.Now())
-
-	tx.MustExec("INSERT INTO body_parts (meta, raw, noteId, createdAt, updatedAt) VALUES ($1, $2, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", "", "Go is amazing", 1)
-	tx.MustExec("INSERT INTO body_parts (meta, raw, noteId, createdAt, updatedAt) VALUES ($1, $2, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", `{"header": 1}`, "\n", 1)
 	tx.Commit()
 }
 
