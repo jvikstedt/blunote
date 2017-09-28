@@ -49,12 +49,6 @@ export default {
 
   components: {
     quillEditor
-  },
-
-  computed: {
-    editor () {
-      return this.$refs.editor.quill
-    }
   }
 }
 </script>
