@@ -4,6 +4,7 @@
     {{ note.body }}
     <div>
       <quill-editor v-model="content"
+        :options="editorOption"
         ref="editor">
       </quill-editor>
     </div>
@@ -14,10 +15,41 @@
 <script type="text/javascript">
 import { quillEditor } from 'vue-quill-editor'
 
+function imageHandler () {
+  var range = this.quill.getSelection()
+  var value = prompt('What is the image URL')
+  this.quill.insertEmbed(range.index, 'image', value, 'user')
+}
+
 export default {
   data: () => ({
     note: {},
-    content: ''
+    content: '',
+    editorOption: {
+      modules: {
+        toolbar: {
+          container: [
+            ['bold', 'italic', 'underline', 'strike'],
+            ['blockquote', 'code-block'],
+            [{ 'header': 1 }, { 'header': 2 }],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            [{ 'script': 'sub' }, { 'script': 'super' }],
+            [{ 'indent': '-1' }, { 'indent': '+1' }],
+            [{ 'direction': 'rtl' }],
+            [{ 'size': ['small', false, 'large', 'huge'] }],
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'font': [] }],
+            [{ 'align': [] }],
+            ['clean'],
+            ['link', 'image', 'video']
+          ],
+          handlers: {
+            image: imageHandler
+          }
+        }
+      }
+    }
   }),
 
   async created () {
