@@ -32,9 +32,7 @@ func main() {
 	}
 	defer db.Close()
 
-	db.Clear()
 	db.EnsureTables()
-	db.Seed()
 
 	model := models.New(db)
 	http.Handle("/", handlers.New(logger, model))

@@ -1,16 +1,25 @@
 import axios from 'axios'
 
 class Api {
-  config = { baseURL: process.env.ENDPOINT };
+  baseURL = process.env.ENDPOINT
+  config = {
+    headers: {'Content-Type': 'application/json'}
+  };
 
   async get (uri) {
-    const response = await axios.get(`${this.config.baseURL}${uri}`)
+    const response = await axios.get(`${this.baseURL}${uri}`)
+
+    return response.data
+  }
+
+  async post (uri, body) {
+    const response = await axios.post(`${this.baseURL}${uri}`, body, this.config)
 
     return response.data
   }
 
   async put (uri, body) {
-    const response = await axios.put(`${this.config.baseURL}${uri}`, body)
+    const response = await axios.put(`${this.baseURL}${uri}`, body, this.config)
 
     return response.data
   }

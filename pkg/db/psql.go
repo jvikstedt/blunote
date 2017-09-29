@@ -59,6 +59,17 @@ func (db *pgDb) GetNotes() ([]*models.Note, error) {
 	return notes, err
 }
 
+func (db *pgDb) CreateNote(note *models.Note) error {
+	rows, err := db.NamedQuery(`INSERT INTO notes (title, body_html, body_text_only, created_at, updated_at) VALUES (:title, :body_html, :body_text_only, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING *`, note)
+	if err != nil {
+		return err
+	}
+	if rows.Next() {
+		err = rows.StructScan(note)
+	}
+	return nil
+}
+
 func (db *pgDb) UpdateNote(note *models.Note) error {
 	rows, err := db.NamedQuery(`UPDATE notes SET (title, body_html, body_text_only, updated_at) = (:title, :body_html, :body_text_only, CURRENT_TIMESTAMP) WHERE id=:id RETURNING *`, note)
 	if err != nil {

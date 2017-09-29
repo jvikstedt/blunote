@@ -43,6 +43,20 @@ func (h handler) notesGetOne(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(note)
 }
 
+func (h handler) notesCreate(w http.ResponseWriter, r *http.Request) {
+	note := &models.Note{}
+	data := &NoteRequest{Note: note}
+	if err := render.Bind(r, data); h.checkErr(err, w, http.StatusBadRequest) {
+		return
+	}
+
+	if err := h.model.CreateNote(data.Note); h.checkErr(err, w, http.StatusUnprocessableEntity) {
+		return
+	}
+
+	json.NewEncoder(w).Encode(note)
+}
+
 func (h handler) notesUpdate(w http.ResponseWriter, r *http.Request) {
 	noteID := chi.URLParam(r, "noteID")
 
@@ -56,7 +70,7 @@ func (h handler) notesUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := h.model.UpdateNote(data.Note); h.checkErr(err, w, http.StatusInternalServerError) {
+	if err := h.model.UpdateNote(data.Note); h.checkErr(err, w, http.StatusUnprocessableEntity) {
 		return
 	}
 

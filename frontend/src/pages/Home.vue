@@ -6,10 +6,11 @@
     <div class="result">
       <note-list :notes="notes" :onClick="onNoteClick"></note-list>
     </div>
+    <router-link to="/notes/new" class="ui button">New</router-link>
   </div>
 </template>
 
-<script type="text/javascript">
+<script>
 import { EventBus } from '@/EventBus'
 import _ from 'lodash'
 
@@ -51,6 +52,6 @@ export default {
 
 <style>
   .result {
-    margin-top: 1em;
+    margin: 1em 0;
   }
 </style>

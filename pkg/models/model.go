@@ -11,6 +11,7 @@ type db interface {
 	SearchNotes(string) ([]*Note, error)
 	GetOneNote(string) (*Note, error)
 	UpdateNote(*Note) error
+	CreateNote(*Note) error
 }
 
 type Model struct {
@@ -38,6 +39,12 @@ func (m *Model) UpdateNote(note *Note) error {
 	note.BodyTextOnly = sanitize.HTML(note.BodyHTML)
 	note.BodyTextOnly = filterNewLines(note.BodyTextOnly)
 	return m.db.UpdateNote(note)
+}
+
+func (m *Model) CreateNote(note *Note) error {
+	note.BodyTextOnly = sanitize.HTML(note.BodyHTML)
+	note.BodyTextOnly = filterNewLines(note.BodyTextOnly)
+	return m.db.CreateNote(note)
 }
 
 func filterNewLines(s string) string {

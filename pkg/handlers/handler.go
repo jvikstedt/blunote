@@ -31,6 +31,7 @@ func New(logger *log.Logger, m *models.Model) http.Handler {
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Route("/notes", func(r chi.Router) {
 			r.Get("/", h.notesIndex)
+			r.Post("/", h.notesCreate)
 
 			r.Route("/{noteID}", func(r chi.Router) {
 				r.Get("/", h.notesGetOne)
